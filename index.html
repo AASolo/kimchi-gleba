@@ -10,9 +10,19 @@
 <meta name="apple-mobile-web-app-title" content="Кимчи Глеба">
 <meta name="description" content="Кулинарная игра: собери кимчи по настоящему рецепту вместе с Глебом Ли. Настоящее кимчи — @hoplalalei, игру сделал @misterandreos.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Кимчи-кафе Глеба Ли — игра">
-<meta property="og:description" content="Собери кимчи по настоящему рецепту и накорми гостей. Настоящее кимчи — @hoplalalei">
+<meta property="og:title" content="🥬 Кимчи-кафе Глеба Ли — игра">
+<meta property="og:description" content="Собери кимчи по настоящему рецепту и накорми гостей. Бесплатно, прямо в браузере, на телефоне и компьютере. Настоящее кимчи — @hoplalalei">
+<meta property="og:site_name" content="Кимчи-кафе Глеба Ли">
+<meta property="og:locale" content="ru_RU">
 <meta property="og:image" content="https://aasolo.github.io/kimchi-gleba/og.jpg">
+<meta property="og:image:secure_url" content="https://aasolo.github.io/kimchi-gleba/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Глеб Ли и контейнеры с кимчи — игра «Кимчи-кафе Глеба Ли»">
+<meta name="twitter:title" content="Кимчи-кафе Глеба Ли — игра">
+<meta name="twitter:description" content="Собери кимчи по настоящему рецепту и накорми гостей. Бесплатно, прямо в браузере.">
+<meta name="twitter:image" content="https://aasolo.github.io/kimchi-gleba/og.jpg">
 <meta property="og:url" content="https://aasolo.github.io/kimchi-gleba/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="icon-512.png">
@@ -497,10 +507,10 @@ function drawGleb(c,t,X,Y){
   // black hair combed back: open forehead, volume on top, comb lines running back
   c.fillStyle='#0b0b0d';
   c.beginPath();c.moveTo(x-27,y-1);c.quadraticCurveTo(x-31,y-30,x-20,y-40);c.quadraticCurveTo(x,y-52,x+20,y-40);c.quadraticCurveTo(x+31,y-30,x+27,y-1);
-  c.quadraticCurveTo(x+25,y-12,x+22,y-17);c.quadraticCurveTo(x+14,y-25,x,y-26);c.quadraticCurveTo(x-14,y-25,x-22,y-17);c.quadraticCurveTo(x-25,y-12,x-27,y-1);c.closePath();c.fill();
+  c.quadraticCurveTo(x+25,y-12,x+22,y-17);c.quadraticCurveTo(x+14,y-25,x,y-26);c.quadraticCurveTo(x-14,y-25,x-22,y-17);c.quadraticCurveTo(x-25,y-12,x-27,y-1);c.closePath();c.fill();c.save();c.clip();
   c.strokeStyle='rgba(140,155,185,.28)';c.lineWidth=1.4;c.lineCap='round';
   for(let i=-3;i<=3;i++){const sx=x+i*6;c.beginPath();c.moveTo(sx,y-25+Math.abs(i)*1.2);c.quadraticCurveTo(sx+i*1.5,y-38,sx+i*3,y-46+Math.abs(i)*1.5);c.stroke()}
-  c.strokeStyle='rgba(140,155,185,.18)';c.lineWidth=3;c.beginPath();c.moveTo(x-14,y-40);c.quadraticCurveTo(x,y-47,x+14,y-40);c.stroke();
+  c.strokeStyle='rgba(140,155,185,.18)';c.lineWidth=3;c.beginPath();c.moveTo(x-14,y-40);c.quadraticCurveTo(x,y-47,x+14,y-40);c.stroke();c.restore();
 }
 const SEG=58;
 function drawArm(c,sx,sy,hx,hy,side){

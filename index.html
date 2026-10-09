@@ -66,7 +66,7 @@ canvas#c{position:absolute;inset:0;width:100%;height:100%;display:block}
 .round:active{transform:scale(.94)}
 .promo{position:absolute;top:calc(env(safe-area-inset-top,0px) + 1.6cqmin);left:calc(env(safe-area-inset-left,0px) + 1.6cqmin);font-weight:800;font-size:clamp(10px,2.3cqmin,16px);background:rgba(74,46,34,.85);color:var(--paper);border-radius:1.2cqmin;padding:.8cqmin 1.6cqmin;text-decoration:none;line-height:1.2;box-shadow:0 .5cqmin 1cqmin rgba(0,0,0,.3)}
 .promo b{color:var(--gold)}
-@container (max-aspect-ratio: 1/1){.promo{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 1cqmin);left:50%;transform:translateX(-50%)}.hud{left:calc(env(safe-area-inset-left,0px) + 1.6cqmin);transform:none;max-width:calc(100% - 28cqmin)}}
+@container (max-aspect-ratio: 1/1){.promo{display:none}.hud{left:calc(env(safe-area-inset-left,0px) + 1.6cqmin);transform:none;max-width:calc(100% - 28cqmin)}}
 button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .ov{position:absolute;inset:0;background:rgba(31,23,18,.55);display:grid;place-items:center;z-index:5;padding:16px;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom));overflow:auto}
 .card{background:linear-gradient(#fffaf2,#f6e8d6);border:3px solid #fff;border-radius:20px;padding:clamp(14px,3cqmin,28px) clamp(16px,4cqmin,36px);width:min(620px,100%);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.45)}
@@ -111,7 +111,6 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
     <button class="round" id="pauseBtn" type="button" aria-label="Пауза">❚❚</button>
   </div>
   <div class="tip" id="tip" hidden></div>
-  <a class="promo" href="https://instagram.com/hoplalalei" target="_blank" rel="noopener">Настоящее кимчи <b>@hoplalalei</b></a>
 
   <div class="ov" id="intro">
     <div class="card">
@@ -120,7 +119,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
       <div class="howto">
         <div><b>1. Продукты</b>Нажимай продукты внизу. Что класть — видно на доске и по подсказке 👇</div>
         <div><b>2. Миска</b>Когда всё положено, Глеб сам перемешает. Нажми на готовую миску.</div>
-        <div><b>3. Гость</b>Нажми на контейнер — он уйдёт гостю. Успей, пока сердечко не опустело.</div>
+        <div><b>3. Гость</b>Контейнер встанет на поднос. Нажми на него — он уйдёт гостю. Успей, пока сердечко не опустело.</div>
       </div>
       <button class="big" id="startBtn" type="button">Играть</button>
       <a class="big real" href="https://instagram.com/hoplalalei" target="_blank" rel="noopener">🥬 Попробовать настоящее кимчи</a>
@@ -128,7 +127,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
     </div>
   </div>
   <div class="ov" id="pauseOv" hidden>
-    <div class="card"><h2>Пауза</h2><p>Гости пьют чай и ждут.</p><button class="big" id="resumeBtn" type="button">Продолжить</button><button class="big alt" id="restartBtn" type="button">Заново</button></div>
+    <div class="card"><h2>Пауза</h2><p>Гости пьют чай и ждут.</p><button class="big" id="resumeBtn" type="button">Продолжить</button><button class="big alt" id="restartBtn" type="button">Заново</button><div><a class="big real" href="https://instagram.com/hoplalalei" target="_blank" rel="noopener">🥬 Попробовать настоящее кимчи</a></div></div>
   </div>
   <div class="ov" id="endOv" hidden>
     <div class="card"><h2 id="endTitle">День закрыт!</h2><div class="bigstars" id="endStars"></div><p id="endText"></p>
@@ -186,11 +185,11 @@ function layout(){
     LY.slots=[X(400),X(610),X(800)];LY.cardSide='right';
     LY.gleb={x:X(182)};
   }else{
-    LY.prep={x:X(16),y:Y(462),w:330,h:170};
+    LY.prep={x:X(16),y:Y(462),w:330,h:200};
     LY.bowls=[{x:X(96),y:Y(512)},{x:X(258),y:Y(512)}];
-    LY.board={x:X(356),y:Y(456),w:230,h:178};
-    LY.slab={x:X(16),y:Y(648),w:568,h:150};
-    LY.plates=[{x:X(88),y:Y(722)},{x:X(230),y:Y(722)},{x:X(372),y:Y(722)},{x:X(514),y:Y(722)}];
+    LY.board={x:X(356),y:Y(456),w:230,h:210};
+    LY.slab={x:X(16),y:Y(678),w:568,h:124};
+    LY.plates=[{x:X(88),y:Y(748)},{x:X(230),y:Y(748)},{x:X(372),y:Y(748)},{x:X(514),y:Y(748)}];
     LY.bins=Array.from({length:10},(_,i)=>({x:X(54+(i%6)*98),y:Y(846+Math.floor(i/6)*74)}));LY.binTray={x:X(6),y:Y(812),w:588,h:150};LY.binW=88;
     LY.trash={x:X(460),y:Y(890),w:110,h:62};
     LY.slots=[X(310),X(500)];LY.cardSide='top';
@@ -215,6 +214,7 @@ let roomImg,counterImg,fxImg;
 function cache(draw){const s=Math.min(2,SC*1.0+.2),c=document.createElement('canvas');c.width=Math.ceil(W*s);c.height=Math.ceil(H*s);const x=c.getContext('2d');x.scale(s,s);draw(x);return c}
 function arched(c,x,y,w,h){c.beginPath();c.moveTo(x,y+h);c.lineTo(x,y+w/2);c.arc(x+w/2,y+w/2,w/2,Math.PI,0);c.lineTo(x+w,y+h);c.closePath()}
 function drawRoom(c){
+  LY.sign=null;
   seed=11;const fl=CT-80,bt=fl-110;
   c.fillStyle=lin(c,0,0,0,bt+10,['#f7e7cf','#efd6b4']);c.fillRect(0,0,W,bt+10);
   c.fillStyle='#c98a62';c.fillRect(0,bt,W,fl-bt);
@@ -251,7 +251,7 @@ function drawRoom(c){
       c.fillStyle=radg(c,lx,sy+10,110,['rgba(255,226,160,.5)','rgba(255,226,160,0)']);c.beginPath();c.arc(lx,sy+10,110,0,7);c.fill();
       c.beginPath();c.moveTo(lx-34,sy+10);c.quadraticCurveTo(lx,sy-30,lx+34,sy+10);c.closePath();c.fillStyle=lin(c,0,sy-30,0,sy+10,['#3f6b55','#2f5442']);c.fill();
       c.beginPath();c.ellipse(lx,sy+12,12,6,0,0,7);c.fillStyle='#fff6d6';c.fill()}
-    c.save();c.translate(W/2,sy+70);c.strokeStyle='#3a2a20';c.lineWidth=2;c.beginPath();c.moveTo(-70,-46);c.lineTo(-90,-sy-40);c.moveTo(70,-46);c.lineTo(90,-sy-40);c.stroke();
+    LY.sign={x:W/2,y:sy+70};c.save();c.translate(W/2,sy+70);c.strokeStyle='#3a2a20';c.lineWidth=2;c.beginPath();c.moveTo(-70,-46);c.lineTo(-90,-sy-40);c.moveTo(70,-46);c.lineTo(90,-sy-40);c.stroke();
     shadowOn(c,14,6,.35);rr(c,-130,-46,260,92,16);c.fillStyle=lin(c,0,-46,0,46,['#c08856','#8e5e38']);c.fill();shadowOff(c);
     rr(c,-120,-36,240,72,10);c.strokeStyle='rgba(255,230,190,.35)';c.lineWidth=2;c.stroke();
     c.fillStyle='#fff3dc';c.textAlign='center';c.font='34px Neucha, cursive';c.fillText('Кимчи-кафе Глеба',0,4,236);c.font='800 15px Nunito, sans-serif';c.fillStyle='#ffd98a';c.fillText('домашнее · @hoplalalei',0,28);c.restore();
@@ -302,11 +302,14 @@ function drawCounter(c){
   rr(c,p.x+8,p.y+8,p.w-16,p.h-22,10);c.fillStyle=lin(c,p.x,p.y,p.x+p.w,p.y+p.h,['#fbf8f3','#ece6dc','#f7f3ec']);c.fill();
   seed=21;c.strokeStyle='rgba(150,140,130,.28)';c.lineWidth=1.2;for(let i=0;i<9;i++){let x=p.x+srnd(10,p.w-10),y=p.y+10;c.beginPath();c.moveTo(x,y);for(let k=0;k<6;k++){x+=srnd(-14,14);y+=(p.h-30)/6;c.lineTo(x,y)}c.stroke()}
   c.fillStyle='#fff3dc';c.font='800 12px Nunito, sans-serif';c.textAlign='center';c.fillText('заготовка',p.x+p.w/2,p.y+p.h-3);
-  // stone slab for containers
+  // serving tray for the finished containers
   const s=LY.slab;
-  shadowOn(c,18,10,.45);c.beginPath();c.moveTo(s.x+14,s.y);c.lineTo(s.x+s.w-14,s.y);c.lineTo(s.x+s.w,s.y+s.h);c.lineTo(s.x,s.y+s.h);c.closePath();c.fillStyle=lin(c,0,s.y,0,s.y+s.h,['#6d7279','#4e535a']);c.fill();shadowOff(c);
-  seed=3;for(let i=0;i<260;i++){c.fillStyle=`rgba(255,255,255,${srnd(.03,.12)})`;c.fillRect(srnd(s.x+6,s.x+s.w-6),srnd(s.y+4,s.y+s.h-4),2,2)}
-  c.fillStyle='#3b3f45';c.fillRect(s.x,s.y+s.h,s.w,9);
+  shadowOn(c,18,10,.45);rr(c,s.x,s.y,s.w,s.h,22);c.fillStyle=lin(c,0,s.y,0,s.y+s.h,['#c9773e','#9a4f22']);c.fill();shadowOff(c);
+  rr(c,s.x+12,s.y+12,s.w-24,s.h-24,14);c.fillStyle=lin(c,0,s.y,0,s.y+s.h,['#e9a56a','#d98a4c']);c.fill();
+  seed=13;c.strokeStyle='rgba(120,60,20,.14)';c.lineWidth=2;for(let i=0;i<12;i++){const y=srnd(s.y+16,s.y+s.h-16);c.beginPath();c.moveTo(s.x+16,y);c.quadraticCurveTo(s.x+s.w/2,y+srnd(-4,4),s.x+s.w-16,y);c.stroke()}
+  c.fillStyle='rgba(255,255,255,.18)';rr(c,s.x+16,s.y+14,s.w-32,6,3);c.fill();
+  for(const hx of[s.x+s.w*.5]){rr(c,hx-36,s.y+s.h-9,72,12,6);c.fillStyle='#7a3c18';c.fill()}
+  c.fillStyle='rgba(255,243,220,.85)';c.font='800 12px Nunito, sans-serif';c.textAlign='center';c.fillText('поднос',s.x+s.w/2,s.y+s.h+16);
   // recipe chalkboard
   const b=LY.board;
   shadowOn(c,16,8,.45);rr(c,b.x,b.y,b.w,b.h,12);c.fillStyle='#a8743f';c.fill();shadowOff(c);
@@ -556,11 +559,11 @@ function drawBowl(c,b,t){
   if(b.st==='ready'){ring(c,x+54,y-28,11,1,'#5cc062','ok');c.font='900 13px Nunito, sans-serif';c.textAlign='center';c.lineWidth=4;c.strokeStyle='rgba(74,46,34,.85)';c.strokeText(RECIPES[b.r].n,x,y+52);c.fillStyle='#fff';c.fillText(RECIPES[b.r].n,x,y+52)}
 }
 function drawPlate(c,p){
+  // a paper napkin marks each spot on the tray
   c.save();c.translate(p.x,p.y);
-  c.beginPath();c.ellipse(0,6,60,23,0,0,7);c.fillStyle='rgba(0,0,0,.35)';c.fill();
-  c.beginPath();c.ellipse(0,0,58,23,0,0,7);c.fillStyle=lin(c,0,-23,0,23,['#ffffff','#e4e8ec']);c.fill();
-  c.beginPath();c.ellipse(0,0,42,15,0,0,7);c.fillStyle=lin(c,0,-15,0,15,['#e9edf1','#ffffff']);c.fill();
-  c.beginPath();c.ellipse(0,0,55,21,0,0,7);c.strokeStyle='#e7b84a';c.lineWidth=2;c.stroke();
+  c.beginPath();c.ellipse(0,4,46,17,0,0,7);c.fillStyle='rgba(90,40,10,.18)';c.fill();
+  c.beginPath();c.ellipse(0,0,44,16,0,0,7);c.fillStyle='rgba(255,248,236,.92)';c.fill();
+  c.setLineDash([4,4]);c.beginPath();c.ellipse(0,0,38,13,0,0,7);c.strokeStyle='rgba(200,140,90,.6)';c.lineWidth=1.5;c.stroke();c.setLineDash([]);
   c.restore();
   if(p.box&&!(drag&&PLATES[drag.i]===p))drawBox(c,p.x,p.y-8,1.22,p.box);
 }
@@ -590,7 +593,7 @@ function drawBoard(c){
   c.fillStyle='#fff';c.font='24px Neucha, cursive';c.fillText(R.n,b.x+16,b.y+32,b.w-60);
   c.fillStyle='rgba(255,255,255,.7)';c.font='700 11px Nunito, sans-serif';c.fillText('Положи в миску всё по списку',b.x+16,b.y+47,b.w-30);
   // page dots
-  const keys=Object.keys(R.ing),cols=P?1:2,rows=Math.ceil(keys.length/cols),lh=Math.min(22,(b.h-60)/rows),cw=(b.w-24)/cols;
+  const keys=Object.keys(R.ing),cols=P?1:2,rows=Math.ceil(keys.length/cols),lh=Math.min(P?26:22,(b.h-66)/rows),cw=(b.w-24)/cols;
   keys.forEach((k,i)=>{const cx=b.x+12+Math.floor(i/rows)*cw,cy=b.y+62+(i%rows)*lh;
     const ok=!!(act&&act.st==='fill'&&act.tr===r&&act.ing[k]);
     if(curGuide&&curGuide.ing===k){rr(c,cx-2,cy-8,cw-4,lh-1,6);c.fillStyle='rgba(255,210,90,.28)';c.fill()}
@@ -705,6 +708,7 @@ function missingText(b){
   return `${R.n}: `+(miss.length?'не хватает '+miss.join(', '):'')+(extra.length?(miss.length?'; ':'')+'лишнее '+extra.join(', '):'');
 }
 function tapAt(px,py){
+  if(P&&LY.sign&&inBox(px,py,LY.sign.x-130,LY.sign.y-46,260,92)){const l=document.createElement('a');l.href='https://instagram.com/hoplalalei';l.target='_blank';l.rel='noopener';document.body.append(l);l.click();l.remove();return}
   const bw=LY.binW;
   for(let i=0;i<ING_ORDER.length;i++){const bp=LY.bins[i];if(inBox(px,py,bp.x-bw/2,bp.y-22,bw,62)){const k=ING_ORDER[i];
     if(!ingUnlocked(k)){say(`${ING[k].n} понадобится позже`,1.4);sfx.buzz();return}
@@ -721,7 +725,7 @@ function tapAt(px,py){
     return}}
   for(let i=0;i<BOWLS.length;i++){const b=BOWLS[i];
     if(inBox(px,py,b.x-66,b.y-56,132,100)){
-      if(b.st==='ready'){const p=PLATES.find(p=>!p.box);if(p){p.box=b.r;b.ing={};b.st='fill';b.r=null;b.tr=null;activeBowl=i;sfx.pack()}else{say('Все тарелки заняты',1.4);sfx.buzz()}}
+      if(b.st==='ready'){const p=PLATES.find(p=>!p.box);if(p){p.box=b.r;b.ing={};b.st='fill';b.r=null;b.tr=null;activeBowl=i;sfx.pack()}else{say('На подносе нет места',1.4);sfx.buzz()}}
       else if(b.st==='fill'){
         if(!bcount(b)||activeBowl!==i){activeBowl=i;sfx.pack();return}
         const r=RKEYS.find(r=>recUnlocked(r)&&Object.keys(RECIPES[r].ing).length===Object.keys(b.ing).length&&Object.entries(RECIPES[r].ing).every(([k,v])=>b.ing[k]===v));
@@ -813,7 +817,7 @@ function render(t){
   if(drag){drawBox(g,drag.x,drag.y,1.3,PLATES[drag.i].box)}
   if(running){curGuide=computeGuide();drawGuide(g,t)}
   g.drawImage(fxImg,0,0,W,H);
-  const tipT=running&&curGuide&&guideOn()?curGuide.t:'';if(tipEl.textContent!==tipT){tipEl.textContent=tipT;tipEl.hidden=!tipT}
+  const tipT=running&&curGuide&&guideOn()&&gl.sayT<=0?curGuide.t:'';if(tipEl.textContent!==tipT){tipEl.textContent=tipT;tipEl.hidden=!tipT}
   if(gl.sayT>0){g.save();g.globalAlpha=Math.min(1,gl.sayT*3);g.font='800 14px Nunito, sans-serif';
     const lines=wrap(g,gl.text,P?170:200),w=Math.max(...lines.map(l=>g.measureText(l).width))+24,h=lines.length*18+16,x=LY.gleb.x+36,y=LY.gleb.y-60-h;
     shadowOn(g,10,4,.3);rr(g,x,y,w,h,14);g.fillStyle='#fffaf2';g.fill();shadowOff(g);

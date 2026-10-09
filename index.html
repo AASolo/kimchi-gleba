@@ -86,6 +86,8 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .card small{display:block;margin-top:10px;color:var(--muted);font-weight:700;font-size:clamp(11px,2.2cqmin,14px)}
 .bigstars{font-size:clamp(40px,10cqmin,64px);letter-spacing:8px;color:#d6c7b5;margin:4px 0 10px}
 .bigstars .on{color:var(--gold);text-shadow:0 4px 0 #b77412}
+.tip{position:absolute;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + clamp(46px,10cqmin,72px));max-width:calc(100% - 24px);background:rgba(40,22,14,.88);color:#fff;font-weight:900;font-size:clamp(14px,3.4cqmin,22px);padding:.45em 1em;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:3}
+@container (max-aspect-ratio: 1/1){.tip{top:calc(env(safe-area-inset-top,0px) + clamp(56px,13cqmin,80px));white-space:normal;text-align:center;width:max-content}}
 .howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:0 0 14px;font-size:clamp(12px,2.3cqmin,14px);font-weight:800;text-align:left}
 .howto div{background:#f4e6d4;border-radius:10px;padding:8px 10px;line-height:1.3}
 .howto b{display:block;color:var(--kimchi)}
@@ -108,17 +110,17 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
     <button class="round" id="muteBtn" type="button" aria-label="Звук">🔊</button>
     <button class="round" id="pauseBtn" type="button" aria-label="Пауза">❚❚</button>
   </div>
+  <div class="tip" id="tip" hidden></div>
   <a class="promo" href="https://instagram.com/hoplalalei" target="_blank" rel="noopener">Настоящее кимчи <b>@hoplalalei</b></a>
 
   <div class="ov" id="intro">
     <div class="card">
       <h1>Кимчи-кафе Глеба Ли</h1>
-      <p>Гости пришли за домашним кимчи. Собирай его по рецепту, раскладывай по контейнерам и отдавай. Чай гости наливают себе сами.</p>
+      <p>Гости пришли за домашним кимчи. Готовь его по рецепту Глеба и отдавай заказы — всего три шага:</p>
       <div class="howto">
-        <div><b>1. Рецепт</b>На доске настоящий рецепт с количеством. Тапни доску, чтобы листать.</div>
-        <div><b>2. Ингредиенты</b>Один тап = одна порция с доски (●). Кочукару на кимчи — два тапа.</div>
-        <div><b>3. Замес</b>Всё положил? Тапни миску, и Глеб перемешает. Ошибся — жми ✕.</div>
-        <div><b>4. Отдать</b>Тапни миску → контейнер. Тапни контейнер или перетащи гостю.</div>
+        <div><b>1. Продукты</b>Нажимай продукты внизу. Что класть — видно на доске и по подсказке 👇</div>
+        <div><b>2. Миска</b>Когда всё положено, Глеб сам перемешает. Нажми на готовую миску.</div>
+        <div><b>3. Гость</b>Нажми на контейнер — он уйдёт гостю. Успей, пока сердечко не опустело.</div>
       </div>
       <button class="big" id="startBtn" type="button">Играть</button>
       <a class="big real" href="https://instagram.com/hoplalalei" target="_blank" rel="noopener">🥬 Попробовать настоящее кимчи</a>
@@ -325,24 +327,15 @@ function build(){roomImg=cache(drawRoom);counterImg=cache(drawCounter);fxImg=cac
 /* ================= ingredients + recipes ================= */
 const ING={
   cabbage:{n:'Капуста',ko:'배추'},radish:{n:'Редька',ko:'무'},cucumber:{n:'Огурцы',ko:'오이'},onion:{n:'Зел. лук',ko:'파'},
-  gochu:{n:'Кочукару',ko:'고춧가루'},garlic:{n:'Чеснок',ko:'마늘'},ginger:{n:'Имбирь',ko:'생강'},fish:{n:'Рыб. соус',ko:'액젓'},sugar:{n:'Сахар',ko:'설탕'},sesame:{n:'Кунжут',ko:'깨'}
+  gochu:{n:'Перец',ko:'고춧가루'},garlic:{n:'Чеснок',ko:'마늘'},ginger:{n:'Имбирь',ko:'생강'},fish:{n:'Рыб. соус',ko:'액젓'},sugar:{n:'Сахар',ko:'설탕'},sesame:{n:'Кунжут',ko:'깨'}
 };
 const ING_ORDER=['cabbage','radish','cucumber','onion','gochu','garlic','ginger','fish','sugar','sesame'];
-// real home recipes; one tap = one measured portion (UNIT), so the taps add up to the real amount for one batch
-const UNIT={cabbage:'½ кочана',radish:'250 г',cucumber:'2 огурца',onion:'пучок 100 г',gochu:'¼ стакана',garlic:'4 зубчика',ginger:'1 ч. л.',fish:'2 ст. л.',sugar:'1 ч. л.',sesame:'1 ст. л.'};
+// real home recipes as plain ingredient lists: each product goes in once
 const RECIPES={
-  baechu:{n:'Кимчи',ko:'배추김치',for:'на 1 кочан пекинки (~2 кг)',day:1,price:34,
-    ing:{cabbage:2,radish:1,onion:1,gochu:2,garlic:2,ginger:1,fish:2,sugar:3},
-    txt:{cabbage:'1 кочан, засоленный',radish:'250 г соломкой',onion:'4 стебля',gochu:'½ стакана',garlic:'8 зубчиков',ginger:'1 ч. л. тёртого',fish:'¼ стакана',sugar:'1 ст. л.'}},
-  kkak:{n:'Какдуги',ko:'깍두기',for:'на 1 кг дайкона',day:2,price:30,
-    ing:{radish:4,gochu:1,garlic:1,ginger:1,fish:1,sugar:2,onion:1},
-    txt:{radish:'1 кг кубиками',gochu:'¼ стакана',garlic:'4 зубчика',ginger:'1 ч. л.',fish:'2 ст. л.',sugar:'2 ч. л.',onion:'3 стебля'}},
-  pa:{n:'Па-кимчи',ko:'파김치',for:'на 500 г зелёного лука',day:3,price:28,
-    ing:{onion:5,gochu:1,fish:2,sugar:1,garlic:1,sesame:1},
-    txt:{onion:'500 г',gochu:'¼ стакана',fish:'4 ст. л.',sugar:'1 ч. л.',garlic:'4 зубчика',sesame:'1 ст. л.'}},
-  oi:{n:'Оисобаги',ko:'오이소박이',for:'на 6 огурцов',day:4,price:28,
-    ing:{cucumber:3,gochu:1,garlic:1,fish:1,sugar:1,onion:1},
-    txt:{cucumber:'6 огурцов, надрезанных',gochu:'¼ стакана',garlic:'4 зубчика',fish:'2 ст. л.',sugar:'1 ч. л.',onion:'3 стебля'}}
+  baechu:{n:'Кимчи',day:1,price:30,ing:{cabbage:1,gochu:1,garlic:1,ginger:1,fish:1,onion:1}},
+  kkak:{n:'Какдуги',day:2,price:28,ing:{radish:1,gochu:1,garlic:1,fish:1,sugar:1}},
+  pa:{n:'Па-кимчи',day:3,price:26,ing:{onion:1,gochu:1,garlic:1,fish:1,sesame:1}},
+  oi:{n:'Оисобаги',day:4,price:26,ing:{cucumber:1,gochu:1,garlic:1,onion:1,sugar:1}}
 };
 const RKEYS=Object.keys(RECIPES);
 function drawIng(c,k,x,y,s=1){
@@ -559,16 +552,6 @@ function drawBowl(c,b,t){
   }else list.forEach((k,i)=>{const a=i*2.1+.5;drawIng(c,k,x+Math.cos(a)*(i?22:0),y-6-Math.min(i,6)*2.5+Math.sin(a)*4,.72)});
   c.restore();
   c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=2.5;c.beginPath();c.ellipse(x,y-4,60,16,0,Math.PI*1.05,Math.PI*1.35);c.stroke();
-  if(b.st==='fill'&&list.length){
-    // chips with counts above the bowl + a clear button
-    const keys=Object.keys(b.ing),cw=24,row=Math.ceil(keys.length/5);
-    keys.forEach((k,i)=>{const r=Math.floor(i/5),inRow=Math.min(5,keys.length-r*5),cx=x-((inRow-1)*cw)/2+(i%5)*cw,cy=y-44-(row-1-r)*24;
-      shadowOn(c,4,2,.3);c.beginPath();c.arc(cx,cy,11,0,7);c.fillStyle='#fffaf2';c.fill();shadowOff(c);drawIng(c,k,cx,cy,.4);
-      if(b.ing[k]>1){c.font='900 10px Nunito, sans-serif';c.textAlign='center';c.fillStyle='#d8432a';c.fillText('×'+b.ing[k],cx+9,cy+12)}});
-    shadowOn(c,4,2,.3);c.beginPath();c.arc(x-60,y+18,11,0,7);c.fillStyle='#e0503a';c.fill();shadowOff(c);
-    c.strokeStyle='#fff';c.lineWidth=2.5;c.lineCap='round';c.beginPath();c.moveTo(x-64,y+14);c.lineTo(x-56,y+22);c.moveTo(x-56,y+14);c.lineTo(x-64,y+22);c.stroke();
-    c.font='900 12px Nunito, sans-serif';c.textAlign='center';c.lineWidth=4;c.strokeStyle='rgba(74,46,34,.85)';c.strokeText('тапни — замес',x,y+52);c.fillStyle='#fff';c.fillText('тапни — замес',x,y+52);
-  }
   if(mixing)ring(c,x+54,y-28,11,p,'#5cc062');
   if(b.st==='ready'){ring(c,x+54,y-28,11,1,'#5cc062','ok');c.font='900 13px Nunito, sans-serif';c.textAlign='center';c.lineWidth=4;c.strokeStyle='rgba(74,46,34,.85)';c.strokeText(RECIPES[b.r].n,x,y+52);c.fillStyle='#fff';c.fillText(RECIPES[b.r].n,x,y+52)}
 }
@@ -589,30 +572,55 @@ function drawBins(c){
     rr(c,-bw/2,-18,bw,40,9);c.fillStyle=lin(c,0,-18,0,22,['#ffffff','#e2e6ea']);c.fill();
     rr(c,-bw/2+5,-13,bw-10,28,6);c.fillStyle=lin(c,0,-13,0,15,['#dde3e8','#f6f8fa']);c.fill();
     if(['gochu','fish','sugar'].includes(k))drawIng(c,k,0,2,.8);else for(let j=0;j<2;j++)drawIng(c,k,-9+j*18,-1+(j%2)*4,.6);
-    c.fillStyle='rgba(74,46,34,.92)';c.font='900 11px Nunito, sans-serif';c.textAlign='center';c.fillText(ING[k].n,0,33);c.font='800 9px Nunito, sans-serif';c.fillStyle='rgba(74,46,34,.7)';c.fillText(UNIT[k],0,-21);
+    c.fillStyle='rgba(74,46,34,.92)';c.font='900 11px Nunito, sans-serif';c.textAlign='center';c.fillText(ING[k].n,0,33);
     if(locked){rr(c,-bw/2,-18,bw,40,9);c.fillStyle='rgba(40,20,10,.55)';c.fill();c.fillStyle='#fff';c.font='900 14px sans-serif';c.fillText('🔒',0,8)}
     c.restore()});
 }
 function boardRecipe(){
   if(boardPick&&boardPickT>0&&recUnlocked(boardPick))return boardPick;
   const b=BOWLS[activeBowl];
-  if(b&&b.st==='fill'&&bcount(b)){const m=RKEYS.filter(recUnlocked).find(r=>b.ing[{baechu:'cabbage',kkak:'radish',pa:'onion',oi:'cucumber'}[r]]&&(r!=='kkak'||!b.ing.cabbage)&&(r!=='pa'||(!b.ing.cabbage&&!b.ing.radish&&!b.ing.cucumber))&&(r!=='oi'||!b.ing.cabbage));if(m)return m}
+  if(b&&b.st==='fill'&&b.tr)return b.tr;
+  if(false){const m=RKEYS.filter(recUnlocked).find(r=>b.ing[{baechu:'cabbage',kkak:'radish',pa:'onion',oi:'cucumber'}[r]]&&(r!=='kkak'||!b.ing.cabbage)&&(r!=='pa'||(!b.ing.cabbage&&!b.ing.radish&&!b.ing.cucumber))&&(r!=='oi'||!b.ing.cabbage));if(m)return m}
   for(const cu of customers){if(cu.state!=='wait')continue;const o=cu.order.find(o=>!o.done);if(o)return o.r}
   return RKEYS.filter(recUnlocked).slice(-1)[0];
 }
 function drawBoard(c){
   const b=LY.board,r=boardRecipe(),R=RECIPES[r],act=BOWLS[activeBowl];
   c.save();c.textAlign='left';
-  c.fillStyle='#fff';c.font='22px Neucha, cursive';c.fillText(`${R.n} · ${R.ko}`,b.x+16,b.y+32,b.w-60);
-  c.fillStyle='rgba(255,255,255,.65)';c.font='700 11px Nunito, sans-serif';c.fillText(R.for,b.x+16,b.y+47,b.w-30);
+  c.fillStyle='#fff';c.font='24px Neucha, cursive';c.fillText(R.n,b.x+16,b.y+32,b.w-60);
+  c.fillStyle='rgba(255,255,255,.7)';c.font='700 11px Nunito, sans-serif';c.fillText('Положи в миску всё по списку',b.x+16,b.y+47,b.w-30);
   // page dots
-  const un=RKEYS.filter(recUnlocked);un.forEach((k,i)=>{c.beginPath();c.arc(b.x+b.w-18-(un.length-1-i)*12,b.y+24,4,0,7);c.fillStyle=k===r?'#ffd25a':'rgba(255,255,255,.3)';c.fill()});
   const keys=Object.keys(R.ing),cols=P?1:2,rows=Math.ceil(keys.length/cols),lh=Math.min(22,(b.h-60)/rows),cw=(b.w-24)/cols;
   keys.forEach((k,i)=>{const cx=b.x+12+Math.floor(i/rows)*cw,cy=b.y+62+(i%rows)*lh;
-    const have=act&&act.st==='fill'?(act.ing[k]||0):0,need=R.ing[k],ok=have===need;
+    const ok=!!(act&&act.st==='fill'&&act.tr===r&&act.ing[k]);
+    if(curGuide&&curGuide.ing===k){rr(c,cx-2,cy-8,cw-4,lh-1,6);c.fillStyle='rgba(255,210,90,.28)';c.fill()}
     c.beginPath();c.arc(cx+10,cy+3,9,0,7);c.fillStyle=ok?'rgba(110,220,90,.35)':'rgba(255,255,255,.12)';c.fill();drawIng(c,k,cx+10,cy+3,.36);
-    c.fillStyle=ok?'#9df07a':'#fff';c.font='800 10.5px Nunito, sans-serif';c.fillText(R.txt[k],cx+24,cy+7,cw-30-need*8);
-    for(let d=0;d<need;d++){c.beginPath();c.arc(cx+cw-14-d*8,cy+3,3,0,7);c.fillStyle=d<have?'#ffd25a':'rgba(255,255,255,.35)';c.fill()}});
+    c.fillStyle=ok?'#9df07a':'#fff';c.font='800 10.5px Nunito, sans-serif';c.font='800 12px Nunito, sans-serif';c.fillText(ING[k].n,cx+24,cy+7,cw-44);
+    if(ok){c.strokeStyle='#9df07a';c.lineWidth=2.5;c.lineCap='round';c.beginPath();c.moveTo(cx+cw-22,cy+3);c.lineTo(cx+cw-18,cy+7);c.lineTo(cx+cw-11,cy-1);c.stroke()}});
+  c.restore();
+}
+/* ================= guide: always shows the next step ================= */
+let curGuide=null,lastAct=0;const tipEl=document.getElementById('tip');
+function matchRecipe(b){return RKEYS.find(r=>recUnlocked(r)&&Object.keys(RECIPES[r].ing).length===Object.keys(b.ing).length&&Object.entries(RECIPES[r].ing).every(([k,v])=>b.ing[k]===v))}
+function computeGuide(){
+  for(const p of PLATES){if(p.box&&findTaker(p.box))return{x:p.x,y:p.y-14,r:44,t:'Нажми на контейнер — он уйдёт гостю'}}
+  const rb=BOWLS.find(b=>b.st==='ready');
+  if(rb&&PLATES.some(p=>!p.box))return{x:rb.x,y:rb.y-6,r:58,t:'Кимчи готово! Нажми на миску'};
+  const b=BOWLS[activeBowl];
+  if(!b||b.st!=='fill')return BOWLS.some(q=>q.st==='mix')?{t:'Глеб перемешивает кимчи…'}:null;
+  const wanted=customers.some(c=>c.state==='wait'&&c.order.some(o=>!o.done));
+  if(!wanted&&!bcount(b))return{t:'Ждём гостей…'};
+  const R=RECIPES[boardRecipe()];
+  for(const k of Object.keys(R.ing)){const have=b.ing[k]||0,need=R.ing[k];if(have<need){const bp=LY.bins[ING_ORDER.indexOf(k)];return{x:bp.x,y:bp.y,r:40,ing:k,t:`${R.n}: нажми «${ING[k].n}»`}}}
+  return null;
+}
+function drawGuide(c,t){
+  const gd=curGuide;if(!gd||gd.x===undefined)return;
+  if(!guideOn())return;
+  const pu=(Math.sin(t*5)+1)/2;
+  c.save();c.beginPath();c.arc(gd.x,gd.y,gd.r+4+pu*6,0,7);c.strokeStyle=`rgba(255,214,70,${.9-pu*.5})`;c.lineWidth=5;c.stroke();
+  c.font='44px "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif';c.textAlign='center';c.textBaseline='bottom';
+  c.shadowColor='rgba(0,0,0,.35)';c.shadowBlur=8;c.shadowOffsetY=3;c.fillText('👇',gd.x,gd.y-gd.r-2-pu*10);
   c.restore();
 }
 /* ================= state ================= */
@@ -625,6 +633,7 @@ const recUnlocked=k=>level>=RECIPES[k].day;
 const ingUnlocked=k=>RKEYS.some(r=>recUnlocked(r)&&RECIPES[r].ing[k]);
 const maxNeed=k=>Math.max(0,...RKEYS.filter(recUnlocked).map(r=>RECIPES[r].ing[k]||0));
 function say(t,d=2.6){gl.text=t;gl.sayT=d}
+const guideOn=()=>(save.taught||0)<2;
 
 function newCustomer(slot){
   const menu=RKEYS.filter(recUnlocked),n=Math.random()<.6||level<2?1:2,order=[];
@@ -641,7 +650,7 @@ function genLook(){
 }
 function startDay(){
   customers=[];flies=[];floats=[];coins=0;timeLeft=Math.round(170+level*15);spawnT=1;served=0;lost=0;spawned=0;total=Math.min(16,5+level*2);drag=null;
-  BOWLS.forEach(b=>{b.ing={};b.st='fill';b.t=0;b.r=null});activeBowl=0;PLATES.forEach(p=>p.box=null);
+  BOWLS.forEach(b=>{b.ing={};b.st='fill';b.t=0;b.r=null;b.tr=null});activeBowl=0;PLATES.forEach(p=>p.box=null);
   running=true;paused=false;
   const intro={1:'Привет! Готовим кимчи по маминому рецепту — смотри доску',2:'Сегодня какдуги: дайкон кубиками',3:'Новинка: па-кимчи из зелёного лука',4:'Сегодня оисобаги — фаршированные огурцы'};
   say(intro[level]||`День ${level}, гостей больше!`,3.6);
@@ -658,6 +667,7 @@ function serve(r,fx,fy,only){
   w.o.done=true;const i=w.cu.order.indexOf(w.o),[tx,ty]=cardPos(w.cu,i);
   flies.push({r,x0:fx,y0:fy,x1:tx,y1:ty,t:0});
   gl.mood=3;setTimeout(()=>gl.mood=2,450);sfx.serve();
+  if(guideOn()){save.taught=(save.taught||0)+1;persist();if(!guideOn())setTimeout(()=>say('Отлично, теперь ты знаешь, как готовить! Дальше сам 💪',3),900)}
   if(w.cu.order.every(o=>o.done)){w.cu.happyT=1;w.cu.payT=.55}
   return true;
 }
@@ -667,12 +677,11 @@ function floater(text,x,y,col='#ffd23a',size=24){floats.push({text,x,y,t:0,col,s
 const inBox=(px,py,x,y,w,h)=>px>=x&&px<=x+w&&py>=y&&py<=y+h;
 function pt(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H]}
 cv.addEventListener('pointerdown',e=>{
-  audio.unlock();
+  audio.unlock();lastAct=0;
   if(!running||paused)return;const[px,py]=pt(e);
   for(let i=0;i<4;i++){const p=PLATES[i];if(p.box&&inBox(px,py,p.x-50,p.y-44,100,64)){drag={i,x:px,y:py,sx:px,sy:py};try{cv.setPointerCapture(e.pointerId)}catch(_){}return}}
   const binHit=LY.bins.some(bp=>inBox(px,py,bp.x-LY.binW/2,bp.y-22,LY.binW,62));
   tapAt(px,py);
-  if(binHit){stopHold();let n=0;holdT=setInterval(()=>{if(++n>2)tapAt(px,py)},160)}
 });
 let holdT=null;const stopHold=()=>{clearInterval(holdT);holdT=null};
 cv.addEventListener('pointerup',stopHold);cv.addEventListener('pointercancel',stopHold);cv.addEventListener('pointerleave',stopHold);
@@ -701,26 +710,32 @@ function tapAt(px,py){
     if(!ingUnlocked(k)){say(`${ING[k].n} понадобится позже`,1.4);sfx.buzz();return}
     pressT[k]=1;
     let b=BOWLS[activeBowl];if(b.st!=='fill'){const j=BOWLS.findIndex(q=>q.st==='fill');if(j<0){say('Обе миски заняты',1.4);sfx.buzz();return}activeBowl=j;b=BOWLS[j]}
-    if((b.ing[k]||0)>=maxNeed(k)){say(`${ING[k].n} — уже достаточно`,1.4);sfx.buzz();return}
-    b.ing[k]=(b.ing[k]||0)+1;sfx.ing(k);floater('+'+UNIT[k],LY.bins[i].x,LY.bins[i].y-34,'#fff',14);
+    if(!b.tr){const wantR=[];for(const cu of customers){if(cu.state!=='wait')continue;for(const o of cu.order)if(!o.done)wantR.push(o.r)}
+      const cand=[boardRecipe(),...wantR,...RKEYS.filter(recUnlocked)].filter(r=>recUnlocked(r)&&RECIPES[r].ing[k]);
+      const main=cand.find(r=>Object.keys(RECIPES[r].ing)[0]===k);b.tr=main||cand[0]||null;if(!b.tr){say(`${ING[k].n} сейчас не нужен`,1.4);sfx.buzz();return}}
+    const TR=RECIPES[b.tr];
+    if(!TR.ing[k]){say(`В ${TR.n.toLowerCase()} это не кладут — смотри доску`,1.8);sfx.buzz();return}
+    if(b.ing[k]){say(`${ING[k].n} уже в миске`,1.2);sfx.buzz();return}
+    b.ing[k]=1;sfx.ing(k);lastAct=0;
+    const rm=matchRecipe(b);if(rm){b.st='mix';b.t=0;b.r=rm;b.tr=null;sfx.mix();const j=BOWLS.findIndex(q=>q.st==='fill');if(j>=0)activeBowl=j}
     return}}
   for(let i=0;i<BOWLS.length;i++){const b=BOWLS[i];
-    if(b.st==='fill'&&bcount(b)&&Math.hypot(px-(b.x-60),py-(b.y+18))<16){b.ing={};activeBowl=i;sfx.trash();floater('Миска очищена',b.x,b.y-50,'#fff');return}
     if(inBox(px,py,b.x-66,b.y-56,132,100)){
-      if(b.st==='ready'){const p=PLATES.find(p=>!p.box);if(p){p.box=b.r;b.ing={};b.st='fill';b.r=null;activeBowl=i;sfx.pack()}else{say('Все тарелки заняты',1.4);sfx.buzz()}}
+      if(b.st==='ready'){const p=PLATES.find(p=>!p.box);if(p){p.box=b.r;b.ing={};b.st='fill';b.r=null;b.tr=null;activeBowl=i;sfx.pack()}else{say('Все тарелки заняты',1.4);sfx.buzz()}}
       else if(b.st==='fill'){
         if(!bcount(b)||activeBowl!==i){activeBowl=i;sfx.pack();return}
         const r=RKEYS.find(r=>recUnlocked(r)&&Object.keys(RECIPES[r].ing).length===Object.keys(b.ing).length&&Object.entries(RECIPES[r].ing).every(([k,v])=>b.ing[k]===v));
         if(r){b.st='mix';b.t=0;b.r=r;sfx.mix();const j=BOWLS.findIndex(q=>q.st==='fill');if(j>=0)activeBowl=j}
-        else{say(missingText(b),2.8);sfx.buzz()}
+        else{const R=RECIPES[b.tr||boardRecipe()],miss=Object.keys(R.ing).filter(k=>!b.ing[k]).map(k=>ING[k].n.toLowerCase());say(`Ещё нужно: ${miss.join(', ')}`,2.4);sfx.buzz()}
       }
       return}}
-  const bd=LY.board;if(inBox(px,py,bd.x,bd.y,bd.w,bd.h)){const un=RKEYS.filter(recUnlocked),cur=boardRecipe();boardPick=un[(un.indexOf(cur)+1)%un.length];boardPickT=8;sfx.pack();return}
+  const bd=LY.board;if(inBox(px,py,bd.x,bd.y,bd.w,bd.h)&&!BOWLS[activeBowl].tr){const un=RKEYS.filter(recUnlocked),cur=boardRecipe();boardPick=un[(un.indexOf(cur)+1)%un.length];boardPickT=8;sfx.pack();return}
   if(Math.hypot(px-LY.gleb.x,py-LY.gleb.y)<40){gl.mood=3;setTimeout(()=>gl.mood=2,600);say(pick(['Кимчи — это любовь','Заказывай у @hoplalalei','Перчатки на месте','Чеснок не жалей']),1.8)}
 }
 
 /* ================= update ================= */
 function update(dt){
+  lastAct+=dt;
   gl.sayT-=dt;boardPickT-=dt;for(const k in pressT)pressT[k]=Math.max(0,pressT[k]-dt*6);
   for(const b of BOWLS){if(b.st==='mix'){b.t+=dt;if(b.t>=MIX_T){b.st='ready';b.t=0;sfx.ready()}}}
   timeLeft-=dt;spawnT-=dt;
@@ -796,7 +811,9 @@ function render(t){
   for(const cu of customers)drawCard(g,cu);
   for(const f of flies){const e=f.t*f.t*(3-2*f.t),x=f.x0+(f.x1-f.x0)*e,y=f.y0+(f.y1-f.y0)*e-Math.sin(e*Math.PI)*70;drawBox(g,x,y,1.2-e*.3,f.r,{lid:e>.5})}
   if(drag){drawBox(g,drag.x,drag.y,1.3,PLATES[drag.i].box)}
+  if(running){curGuide=computeGuide();drawGuide(g,t)}
   g.drawImage(fxImg,0,0,W,H);
+  const tipT=running&&curGuide&&guideOn()?curGuide.t:'';if(tipEl.textContent!==tipT){tipEl.textContent=tipT;tipEl.hidden=!tipT}
   if(gl.sayT>0){g.save();g.globalAlpha=Math.min(1,gl.sayT*3);g.font='800 14px Nunito, sans-serif';
     const lines=wrap(g,gl.text,P?170:200),w=Math.max(...lines.map(l=>g.measureText(l).width))+24,h=lines.length*18+16,x=LY.gleb.x+36,y=LY.gleb.y-60-h;
     shadowOn(g,10,4,.3);rr(g,x,y,w,h,14);g.fillStyle='#fffaf2';g.fill();shadowOff(g);
@@ -915,7 +932,7 @@ resize();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(build);
 // example scene behind the start card
 customers=LY.slots.slice(0,2).map((_,i)=>newCustomer(i));customers.forEach(c=>{c.x=c.tx;c.state='wait';c.tea=c.slot===1});
-BOWLS[0].ing={cabbage:1,gochu:2,garlic:1};BOWLS[1].st='ready';BOWLS[1].r='baechu';PLATES[0].box='baechu';
+BOWLS[0].ing={cabbage:1,gochu:1,garlic:1};BOWLS[0].tr='baechu';BOWLS[1].st='ready';BOWLS[1].r='baechu';PLATES[0].box='baechu';
 hud(true);
 requestAnimationFrame(frame);
 })();
